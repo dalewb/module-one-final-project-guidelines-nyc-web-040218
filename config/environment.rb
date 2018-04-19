@@ -23,8 +23,11 @@ def user_check_prompt
 @user_type.multi_select("Are you a new or existing user?", choices)
 end
 
+
+#if new user
+
 def set_password
-  prompt.mask("Set your password")
+  @password = prompt.mask("Set your password")
 end
 
 
