@@ -17,9 +17,20 @@ def how_we_select_prompt
 @company_search_type.multi_select("Select company by:", choices)
 end
 
+def user_check_prompt
+  @user_type = TTY::Prompt.new
+  choices = %w(New Existing)
+@user_type("Are you a new or existing user?", choices)
+end
+
+def set_password
+  prompt.mask("Set your password")
+end
 
 
-
+def create_password
+  prompt.mask("Enter your password")
+end
 
 def welcome
     puts "Welcome!  This is an IPO investment game."
