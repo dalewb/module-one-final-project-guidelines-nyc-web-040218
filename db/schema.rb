@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 4) do
+ActiveRecord::Schema.define(version: 5) do
 
   create_table "companies", force: :cascade do |t|
     t.string "name"
     t.string "open_price"
     t.string "close_price"
+    t.string "percent_change"
   end
 
   create_table "transactions", force: :cascade do |t|

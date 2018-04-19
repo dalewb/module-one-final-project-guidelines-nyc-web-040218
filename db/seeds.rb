@@ -2419,7 +2419,7 @@ data = {
 
 
 data[:IPOPerformances].each do |company_hash|
-  Company.create(name: company_hash[:Name], open_price: company_hash[:OfferPrice].to_s, close_price: company_hash[:ClosePrice].to_s)
+  Company.create(name: company_hash[:Name], open_price: company_hash[:OfferPrice].to_s, close_price: company_hash[:ClosePrice].to_s, percent_change: company_hash[:PercentChange])
 end
 
 # data[:IPOPerformances].each do |company_hash|
