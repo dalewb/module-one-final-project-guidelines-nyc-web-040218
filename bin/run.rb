@@ -1,5 +1,7 @@
 require_relative '../config/environment'
+require 'pry'
 
+how_we_select_prompt
 welcome
 until @user.account_balance < lowest_open_price
   user_interaction
@@ -7,10 +9,6 @@ until @user.account_balance < lowest_open_price
     puts "Looks like you're biting off more than you can chew! Please try again"
     user_interaction
   end
-  change_balance
-  make_transaction
-  display_balance
-  display_portfolio
+game_logic
 end
-investments_complete
-return_on_capital
+end_game

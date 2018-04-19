@@ -1,9 +1,36 @@
 require 'bundler'
 # require 'pry'
 Bundler.require
+prompt = TTY::Prompt.new
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 require_all 'app'
+
+def welcome_prompt
+
+end
+
+
+def how_we_select_prompt
+  @company_search_type = TTY::Prompt.new
+  choices = %w(Symbol Name)
+@company_search_type.multi_select("Select company by:", choices)
+end
+
+def user_check_prompt
+  @user_type = TTY::Prompt.new
+  choices = %w(New Existing)
+@user_type("Are you a new or existing user?", choices)
+end
+
+def set_password
+  prompt.mask("Set your password")
+end
+
+
+def create_password
+  prompt.mask("Enter your password")
+end
 
 def welcome
     puts "Welcome!  This is an IPO investment game."
@@ -33,6 +60,7 @@ def welcome
   def change_balance
     @user.account_balance -= purchase_price
     @user.account_balance
+    @user.save
     # binding.pry
   end
 
@@ -74,7 +102,7 @@ end
 
   def return_on_capital
     result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
-    puts result.round(2)
+    puts "Your monetary return is $#{result.round(2)}"
   end
 
   # thurman.final_sale
@@ -94,7 +122,7 @@ end
 
   def display_portfolio
     @user.companies.map do |company|
-      puts "#{company.name}, Share Price: #{company.open_price}"
+      puts "#{company.name}, Share Price: $#{company.open_price}"
   end
 end
   # Number of Shares: #{@user.find_num_shares(company)}"
@@ -117,6 +145,30 @@ end
     purchase_price < @user.account_balance
   end
 
+  def return_by_company
+    company_names_by_percentage.map do |name, percentage|
+    puts "You returned #{percentage}% for #{name}"
+  end
+end
+
+def company_names_by_percentage
+  result = {}
+  @user.companies.all.map { |company| result[company.name] = company.percent_change }
+result
+end
+
+def end_game
+  investments_complete
+  return_on_capital
+  return_by_company
+end
+
+def game_logic
+  change_balance
+  make_transaction
+  display_balance
+  display_portfolio
+end
   # def get_company
   #   @company_name = prompt.select("Choose a company to invest in:", Company.all_names)
   # end
