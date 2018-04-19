@@ -90,14 +90,14 @@ end
 
   # Investments
   def final_sale
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       result = company.close_price.to_f * @user.find_num_shares(company)
       result.round(2)
     end
   end
 
   def initial_purchase
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       result = company.open_price.to_f * @user.find_num_shares(company)
       result.round(2)
     end
@@ -124,7 +124,7 @@ end
 
 
   def display_portfolio
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       puts "#{company.name}, Share Price: $#{company.open_price}"
   end
 end
@@ -157,7 +157,7 @@ end
 def company_names_by_percentage
   result = {}
   @user.companies.all.map { |company| result[company.name] = company.percent_change }
-result
+  result
 end
 
 def end_game
@@ -175,3 +175,8 @@ end
   # def get_company
   #   @company_name = prompt.select("Choose a company to invest in:", Company.all_names)
   # end
+
+  # Hennessy Capital Acquisition III
+  # iQIYI
+  # Homology Medicines
+  # Longfin
