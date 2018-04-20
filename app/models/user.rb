@@ -52,6 +52,25 @@ class User < ActiveRecord::Base
     end
   end
 
+  def view_all_positive_returns
+    count = 0
+    names = []
+    self.transactions.all.each do |transaction|
+      trans_info_hash = transaction_info(transaction).values.first
+      company_name = transaction_info(transaction).keys.first
+      if trans_info_hash[:percent] > 0 && !names.include?(company_name)
+        puts "#{company_name}"
+        puts "  Percent Increase: #{trans_info_hash[:percent]}%"
+        puts "  Monetary Gain: $#{trans_info_hash[:money].round(2)}"
+        count += 1
+        names << company_name
+      end
+    end
+    if count == 0
+      puts "I'm sorry, you do not have any negative returns."
+    end
+  end
+
   def transaction_info(transaction)
     result = {}
     info = {}

@@ -1,10 +1,12 @@
 require 'bundler'
+
 # require 'pry'
 Bundler.require
 prompt = TTY::Prompt.new
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 require_all 'app'
+
 
 def welcome_prompt
 
@@ -161,11 +163,11 @@ end
     end
   end
 
-  # def overall_percentage
-  #   result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
-  #   percentage = (result / 100) * 100
-  #   puts "You returned an overall percentage of #{percentage}%"
-  # end
+  def overall_percentage
+    result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
+    percentage = (result / 100) * 100
+    puts "You returned an overall percentage of #{percentage}%"
+  end
 
   def company_names_by_percentage
     result = {}
