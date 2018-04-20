@@ -1,62 +1,76 @@
 require 'bundler'
 # require 'pry'
 Bundler.require
-prompt = TTY::Prompt.new
+
+@prompt = TTY::Prompt.new
+
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 require_all 'app'
 
-def welcome_prompt
+ActiveRecord::Base.logger = nil
 
+def welcome_prompt
+ choices = %w(Start Resume)
+@response = @prompt.select("Would you like to start or resume a game?", choices)
+@response
 end
 
+# if @user_type == "New"
+# @user_name = prompt.ask("What is your name?")
+#
 
 def how_we_select_prompt
-  @company_search_type = TTY::Prompt.new
-  choices = %w(Symbol Name)
-@company_search_type.multi_select("Select company by:", choices)
+  choices = %w(Name Symbol)
+  @prompt.select("How would you like to select your investment?", choices)
 end
 
 def user_check_prompt
-  @user_type = TTY::Prompt.new
-  choices = %w(New Existing)
+@user_type = TTY::Prompt.new
+choices = %w(New Existing)
 @user_type.multi_select("Are you a new or existing user?", choices)
 end
 
 
 #if new user
-
-def set_password
-  @password = prompt.mask("Set your password")
+def create_user
+@new_name = @prompt.ask("What is your name?")
+@user = User.create(name: @new_name, account_balance: 100)
 end
+
+# def set_password
+#   @password = @prompt.mask("Set your password")
+# end
 
 
 def create_password
   prompt.mask("Enter your password")
 end
 
-def welcome
-    puts "Welcome!  This is an IPO investment game."
-    puts "Please enter your name:"
-    name = gets.chomp
-    @user = User.create(name: name, account_balance: 100)
+def welcome_back
+    @name = @prompt.ask("Welcome back to the IPO investment game! What's your username?")
+    until User.unique_names.include?(@name)
+      @name_second = @prompt.ask("Invalid name. Please type a valid name")
   end
+  @user = User.find_by(name:@name)
+  @user
+end
 
-  def get_company
-    # @company_name =
-    # prompt.select("Choose a company to invest in:", Company.all_names)
-    puts "Choose a company to invest in:"
-    @company = gets.chomp
-    until Company.all_names.include?(@company)
-      puts "Invalid company.  Please choose again."
-      @company = gets.chomp
+
+    # name = gets.chomp
+    # @user = User.create(name: name, account_balance: 100)
+
+
+  def get_company_by_name
+    @company = @prompt.select("Choose a company to invest in", Company.all_names)
+    @company = Company.find_by(name: @company)
+    # until Company.all_names.include?(@company)
+    #   puts "Invalid company.  Please choose again."
     end
-  end
 
    def get_share_amount
     # @shares_select = prompt.slider("Shares:", max: 50, step: 1)
-    puts "Select share amount:"
-    @shares = gets.chomp.to_f
+    @shares = @prompt.slider('Shares', max: 10, step: 1).to_f
   end
 
 
@@ -71,8 +85,7 @@ def welcome
      if @user.account_balance < lowest_open_price && @shares <= 1
        puts "Insufficient funds for this transaction."
      else
-     company = Company.find_by(name: @company)
-     Transaction.create(company_id: company.id, user_id: @user.id, num_of_shares: @shares, buy: true)
+     Transaction.create(company_id: @company.id, user_id: @user.id, num_of_shares: @shares, buy: true)
    end
 end
 
@@ -136,12 +149,17 @@ end
   end
 
   def user_interaction
-    get_company
+    if how_we_select_prompt == "Name"
+    get_company_by_name
+    get_share_amount
+  elsif how_we_select_prompt == "Symbol"
+    get_company_by_symbol
     get_share_amount
   end
+end
 
   def purchase_price
-    @shares * Company.find_by(name: @company).open_price.to_f
+    @shares * @company.open_price.to_f
   end
 
   def valid_transaction?
@@ -151,8 +169,8 @@ end
   def return_by_company
     company_names_by_percentage.map do |name, percentage|
     puts "You returned #{percentage}% for #{name}"
+    end
   end
-end
 
 def company_names_by_percentage
   result = {}
@@ -172,6 +190,37 @@ def game_logic
   display_balance
   display_portfolio
 end
+
+def run_program
+art = AsciiArt.new('./app/dollar-signs.jpg')
+puts art.to_ascii_art(width: 120)
+welcome_prompt
+case @response
+  when "Resume"
+  welcome_back
+  until @user.account_balance < lowest_open_price
+    user_interaction
+    until valid_transaction?
+      puts "Looks like you're biting off more than you can chew! Please try again"
+      user_interaction
+    end
+    game_logic
+  end
+end_game
+  when "Start"
+  create_user
+  until @user.account_balance < lowest_open_price
+    user_interaction
+    until valid_transaction?
+      puts "Looks like you're biting off more than you can chew! Please try again"
+      user_interaction
+    end
+    game_logic
+  end
+end_game
+end
+end
+
   # def get_company
   #   @company_name = prompt.select("Choose a company to invest in:", Company.all_names)
   # end

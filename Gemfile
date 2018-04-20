@@ -8,3 +8,4 @@ gem "require_all"
 gem "faker"
 gem 'tty'
 gem 'tty-prompt'
+gem 'asciiart'

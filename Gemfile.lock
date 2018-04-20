@@ -13,6 +13,9 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (7.1.4)
+    asciiart (0.0.9)
+      rainbow (= 2.0.0)
+      rmagick (= 2.13.4)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     equatable (0.5.0)
@@ -33,7 +36,9 @@ GEM
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
+    rainbow (2.0.0)
     require_all (1.3.3)
+    rmagick (2.13.4)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -69,6 +74,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  asciiart
   faker
   pry
   require_all
