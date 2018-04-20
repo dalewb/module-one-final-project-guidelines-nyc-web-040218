@@ -135,8 +135,15 @@ end
     end
   end
 
+  def shares_for_company
+    company = Company.find_by(name: @company).open_price.to_f
+    allowed_shares = (@user.account_balance / company).floor
+    puts "For #{@company}, you can purchase a maximum of #{allowed_shares} shares"
+  end
+
   def user_interaction
     get_company
+    shares_for_company
     get_share_amount
   end
 
@@ -145,7 +152,7 @@ end
   end
 
   def valid_transaction?
-    purchase_price < @user.account_balance
+    purchase_price <= @user.account_balance
   end
 
   def return_by_company
@@ -154,11 +161,11 @@ end
     end
   end
 
-  def overall_percentage
-    result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
-    percentage = (result / 100) * 100
-    puts "You returned an overall percentage of #{percentage}%"
-  end
+  # def overall_percentage
+  #   result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
+  #   percentage = (result / 100) * 100
+  #   puts "You returned an overall percentage of #{percentage}%"
+  # end
 
   def company_names_by_percentage
     result = {}
