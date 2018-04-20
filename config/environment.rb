@@ -1,4 +1,5 @@
 require 'bundler'
+
 # require 'pry'
 Bundler.require
 
@@ -8,7 +9,12 @@ Bundler.require
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 require_all 'app'
 
+<<<<<<< HEAD
 ActiveRecord::Base.logger = nil
+=======
+
+def welcome_prompt
+>>>>>>> 4c14e7049130ffd4aeb4341bd05ab8a4a2f4ed58
 
 def welcome_prompt
  choices = %w(Start Resume)
@@ -103,14 +109,14 @@ end
 
   # Investments
   def final_sale
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       result = company.close_price.to_f * @user.find_num_shares(company)
       result.round(2)
     end
   end
 
   def initial_purchase
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       result = company.open_price.to_f * @user.find_num_shares(company)
       result.round(2)
     end
@@ -137,10 +143,10 @@ end
 
 
   def display_portfolio
-    @user.companies.map do |company|
+    @user.companies.all.map do |company|
       puts "#{company.name}, Share Price: $#{company.open_price}"
+    end
   end
-end
   # Number of Shares: #{@user.find_num_shares(company)}"
 
   def view_all_companies?
@@ -148,12 +154,23 @@ end
     end
   end
 
+  def shares_for_company
+    company = Company.find_by(name: @company).open_price.to_f
+    allowed_shares = (@user.account_balance / company).floor
+    puts "For #{@company}, you can purchase a maximum of #{allowed_shares} shares"
+  end
+
   def user_interaction
+<<<<<<< HEAD
     if how_we_select_prompt == "Name"
     get_company_by_name
     get_share_amount
   elsif how_we_select_prompt == "Symbol"
     get_company_by_symbol
+=======
+    get_company
+    shares_for_company
+>>>>>>> 4c14e7049130ffd4aeb4341bd05ab8a4a2f4ed58
     get_share_amount
   end
 end
@@ -163,27 +180,32 @@ end
   end
 
   def valid_transaction?
-    purchase_price < @user.account_balance
+    purchase_price <= @user.account_balance
   end
 
   def return_by_company
     company_names_by_percentage.map do |name, percentage|
+<<<<<<< HEAD
     puts "You returned #{percentage}% for #{name}"
+=======
+      puts "You returned #{percentage}% for #{name}"
+>>>>>>> 4c14e7049130ffd4aeb4341bd05ab8a4a2f4ed58
     end
   end
 
-def company_names_by_percentage
-  result = {}
-  @user.companies.all.map { |company| result[company.name] = company.percent_change }
-result
-end
+  def overall_percentage
+    result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
+    percentage = (result / 100) * 100
+    puts "You returned an overall percentage of #{percentage}%"
+  end
 
-def end_game
-  investments_complete
-  return_on_capital
-  return_by_company
-end
+  def company_names_by_percentage
+    result = {}
+    @user.companies.all.map { |company| result[company.name] = company.percent_change }
+    result
+  end
 
+<<<<<<< HEAD
 def game_logic
   change_balance
   make_transaction
@@ -221,6 +243,26 @@ end_game
 end
 end
 
+=======
+  def end_game
+    investments_complete
+    return_on_capital
+    return_by_company
+    overall_percentage
+  end
+
+  def game_logic
+    change_balance
+    make_transaction
+    display_balance
+    display_portfolio
+  end
+>>>>>>> 4c14e7049130ffd4aeb4341bd05ab8a4a2f4ed58
   # def get_company
   #   @company_name = prompt.select("Choose a company to invest in:", Company.all_names)
   # end
+
+  # Hennessy Capital Acquisition III
+  # iQIYI
+  # Homology Medicines
+  # Longfin
