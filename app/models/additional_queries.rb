@@ -119,41 +119,42 @@ end
       end
     end
 
-  # 7 See most profitable transaction for a user
-
-    # User class
-    def most_profitable_transaction
-
-    end
-
-  # 8 See least profitable transaction for a user
-
-    # User class
-    def least_profitable_transaction
-
-    end
-
-  # 9 See a company's highest single investment from all users
+  # 9 See a company's highest single investment transaction from all users
 
     # Company class
     def highest_investment
-
+      count = Hash.new(0)
+      self.transactions.each do |transaction|
+        count[transaction.user] += transaction.num_of_shares
+      end
+      count.max_by {|k,v| v}
     end
 
   # 10 Find investor with the highest stake in a company
 
     # Company class
     def user_with_highest_stake
-
+      self.tran
     end
 
   # 11 Find user with the most shares
 
     # Company class
     def user_with_most_shares_in_company
-
+      count = Hash.new(0)
+      self.transactions.each do |transaction|
+        count[transaction.user] += transaction.num_of_shares
+      end
+      count.max_by {|k,v| v}.keys.first
     end
 
   # 12 Put in a message after user chooses a company saying 'You can buy x shares of this company'"
 
     #SUGGESTION
+
+  # 13 All companies with Investments
+
+
+    def all_companies_with_investments
+      Transaction.all.map {|trans| trans.company}.uniq
+    end

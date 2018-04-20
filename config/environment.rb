@@ -126,8 +126,8 @@ end
   def display_portfolio
     @user.companies.all.map do |company|
       puts "#{company.name}, Share Price: $#{company.open_price}"
+    end
   end
-end
   # Number of Shares: #{@user.find_num_shares(company)}"
 
   def view_all_companies?
@@ -150,28 +150,35 @@ end
 
   def return_by_company
     company_names_by_percentage.map do |name, percentage|
-    puts "You returned #{percentage}% for #{name}"
+      puts "You returned #{percentage}% for #{name}"
+    end
   end
-end
 
-def company_names_by_percentage
-  result = {}
-  @user.companies.all.map { |company| result[company.name] = company.percent_change }
-  result
-end
+  def overall_percentage
+    result = final_sale.reduce(:+) - initial_purchase.reduce(:+)
+    percentage = (result / 100) * 100
+    puts "You returned an overall percentage of #{percentage}%"
+  end
 
-def end_game
-  investments_complete
-  return_on_capital
-  return_by_company
-end
+  def company_names_by_percentage
+    result = {}
+    @user.companies.all.map { |company| result[company.name] = company.percent_change }
+    result
+  end
 
-def game_logic
-  change_balance
-  make_transaction
-  display_balance
-  display_portfolio
-end
+  def end_game
+    investments_complete
+    return_on_capital
+    return_by_company
+    overall_percentage
+  end
+
+  def game_logic
+    change_balance
+    make_transaction
+    display_balance
+    display_portfolio
+  end
   # def get_company
   #   @company_name = prompt.select("Choose a company to invest in:", Company.all_names)
   # end
